@@ -1,26 +1,35 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import DefaultLayout from "./layouts/DefaultLayout/DefaultLayout.jsx";
-import LoginLayout from "./layouts/LoginLayout/LoginLayout.jsx";
+import AuthenticationLayout from "./layouts/authenticationLayout/authenticationLayout.jsx";
 
-import Login from "./views/Login/Login.jsx";
+import SignIn from "./views/SignIn/SignIn.jsx";
+import SignUp from "./views/SignUp/SignUp.jsx";
+
 import Catalog from "./views/Catalog/Catalog.jsx";
+import Home from "./views/Home/Home.jsx";
 
+import UserProfile from "./views/UserProfile/UserProfile.jsx";
+import UserSettings from "./views/UserSettings/UserSettings.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LoginLayout />,
+    element: <AuthenticationLayout />,
     children: [
       {
         path: "/",
-        element: <Navigate to={"/login"} />,
+        element: <Navigate to={"/sign-in"} />,
       },
       {
-        path: "/login",
-        element: <Login />,
+        path: "/sign-in",
+        element: <SignIn />,
+      },
+      {
+        path: "/sign-up",
+        element: <SignUp />,
       },
       {
         path: "*",
-        element: <Navigate to={"/login"} />,
+        element: <Navigate to={"/sign-in"} />,
       },
     ],
   },
@@ -35,6 +44,18 @@ const router = createBrowserRouter([
       {
         path: "/catalog",
         element: <Catalog />,
+      },
+      {
+        path: "/home",
+        element: <Home />,
+      },
+      {
+        path: "/user-profile",
+        element: <UserProfile />,
+      },
+      {
+        path: "/user-settings",
+        element: <UserSettings />,
       },
     ],
   },

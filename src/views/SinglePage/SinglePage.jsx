@@ -118,7 +118,7 @@ export default function SinglePage() {
 
   useEffect(() => {
     dispatch(fetchGenre(book.data.genres));
-  }, [book.data]);
+  }, [book.data, id]);
 
   return (
     <div className="bg-white">

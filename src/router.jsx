@@ -7,6 +7,7 @@ import SignUp from "./views/SignUp/SignUp.jsx";
 
 import Catalog from "./views/Catalog/Catalog.jsx";
 import Home from "./views/Home/Home.jsx";
+import SinglePage from "./views/SinglePage/SinglePage.jsx";
 
 import UserProfile from "./views/UserProfile/UserProfile.jsx";
 import UserSettings from "./views/UserSettings/UserSettings.jsx";
@@ -43,7 +44,16 @@ const router = createBrowserRouter([
       },
       {
         path: "/catalog",
-        element: <Catalog />,
+        children: [
+          {
+            index: true,
+            element: <Catalog />,
+          },
+          {
+            path: ":id",
+            element: <SinglePage />,
+          },
+        ],
       },
       {
         path: "/home",
@@ -52,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: "/user-profile",
         element: <UserProfile />,
+      },
+      {
+        path: "/user-settings",
+        element: <UserSettings />,
       },
       {
         path: "/user-settings",

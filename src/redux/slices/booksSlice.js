@@ -11,7 +11,6 @@ export const fetchBooks = createAsyncThunk(
       `${process.env.VITE_BACKEND}/books?page=${page}&limit=${limit}`
     );
     const data = await response.json();
-    console.log(data);
     return { data, quantity };
   }
 );
@@ -19,7 +18,6 @@ export const fetchBooks = createAsyncThunk(
 const booksSlice = createSlice({
   name: "books",
   initialState: { data: [], isLoading: false, isError: false, quantity: 0 },
-  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(fetchBooks.pending, (state) => {

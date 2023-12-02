@@ -9,7 +9,7 @@ import { ContextProvider } from "./contexts/ContextProvider";
 
 import router from "./router.jsx";
 
-import "./styles/styles.scss";
+import "./styles/styles.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

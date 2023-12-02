@@ -1,10 +1,17 @@
 /* This example requires Tailwind CSS v2.0+ */
 import { Fragment, useState } from "react";
 import { Transition } from "@headlessui/react";
-import { CheckCircleIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
-export default function Notification({show, setShow}) {
+export default function Notification({
+  show,
+  setShow,
+  title,
+  body,
+  error = false,
+}) {
+  console.log(error);
   return (
     <>
       <div
@@ -26,18 +33,21 @@ export default function Notification({show, setShow}) {
               <div className="p-4">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <CheckCircleIcon
-                      className="h-6 w-6 text-green-400"
-                      aria-hidden="true"
-                    />
+                    {error ? (
+                      <XCircleIcon
+                        className="h-6 w-6 text-red-400"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <CheckCircleIcon
+                        className="h-6 w-6 text-green-400"
+                        aria-hidden="true"
+                      />
+                    )}
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-gray-900">
-                      Successfully saved!
-                    </p>
-                    <p className="mt-1 text-sm text-gray-500">
-                      Anyone with a link can now view this file.
-                    </p>
+                    <p className="text-sm font-medium text-gray-900">{title}</p>
+                    <p className="mt-1 text-sm text-gray-500">{body}</p>
                   </div>
                   <div className="ml-4 flex-shrink-0 flex">
                     <button

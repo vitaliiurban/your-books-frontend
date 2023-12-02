@@ -39,12 +39,12 @@ function Catalog() {
               </a>
             ))}
           </div>
-          <Pagination
+          {/* <Pagination
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
             booksQuantity={books.quantity}
             limit={currentLimit}
-          />
+          /> */}
         </div>
       </div>
     </>

@@ -57,7 +57,7 @@ function Catalog() {
               previousLabel={"<"}
               nextLabel={">"}
               pageCount={Math.ceil(books.quantity / currentLimit)}
-              pageRangeDisplayed={2}
+              pageRangeDisplayed={4}
               marginPagesDisplayed={1}
               currentPage={currentPage}
               onPageChange={handlePageChange}

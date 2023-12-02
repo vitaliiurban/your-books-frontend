@@ -147,9 +147,11 @@ export default function SinglePage() {
                 <h2 id="information-heading" className="sr-only">
                   Product information
                 </h2>
-                <p className="text-sm text-gray-500 mt-2">
-                  Genre: {genre.data?.name}
-                </p>
+                {!book.isLoading && !genre.isLoading && (
+                  <p className="text-sm text-gray-500 mt-2">
+                    Genre: {genre.data?.name}
+                  </p>
+                )}
                 <p className="text-sm text-gray-500 mt-2">
                   Author: {book.data?.author}
                 </p>

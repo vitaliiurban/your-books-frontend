@@ -2,6 +2,7 @@ import authenticationSlice from "./slices/authenticationSlice";
 
 import booksSlice from "./slices/booksSlice";
 import bookSlice from "./slices/bookSlice";
+import userSlice from "./slices/userSlice";
 
 import { configureStore } from "@reduxjs/toolkit";
 import genresSlice from "./slices/genresSlice";
@@ -14,6 +15,7 @@ const store = configureStore({
     book: bookSlice,
     genres: genresSlice,
     reserves: reservesSlice,
+    user: userSlice,
   },
 });
 export default store;

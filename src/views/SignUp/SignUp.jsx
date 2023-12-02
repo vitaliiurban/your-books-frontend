@@ -177,7 +177,12 @@ export default function SignUp() {
           </div>
         </div>
       </div>
-      <Notification show={show} setShow={setShow} />
+      <Notification
+        show={show}
+        setShow={setShow}
+        title={"successfully added"}
+        body={"now you can go to sign in page!"}
+      />
     </>
   );
 }

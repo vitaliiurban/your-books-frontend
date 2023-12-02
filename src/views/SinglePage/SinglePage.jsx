@@ -117,7 +117,7 @@ export default function SinglePage() {
   }, [id]);
 
   useEffect(() => {
-    dispatch(fetchGenre(id));
+    dispatch(fetchGenre(book.data.genres));
   }, [book.data]);
 
   return (

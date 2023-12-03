@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useStateContext } from "../../contexts/ContextProvider.jsx";
 import { useEffect, useState } from "react";
 
+import { updateReserved } from "../../redux/slices/bookSlice";
 import { fetchReservesBooks } from "../../redux/slices/booksSlice";
 import { deleteReserve } from "../../redux/slices/reservesSlice.js";
 
@@ -62,7 +63,6 @@ export default function Reserves() {
                         {book.publisher}
                       </p>
                     </div>
-
                     <div className="mt-4 flex-1 flex items-end justify-between">
                       <p className="flex items-center text-sm text-gray-700 space-x-2"></p>
                       <div className="ml-4">
@@ -76,8 +76,8 @@ export default function Reserves() {
                             );
                             dispatch(
                               updateReserved({
-                                book_id: book.data?.id,
-                                value: book.data?.reserved - 1,
+                                book_id: book?.id,
+                                value: book?.reserved - 1,
                               })
                             );
                           }}

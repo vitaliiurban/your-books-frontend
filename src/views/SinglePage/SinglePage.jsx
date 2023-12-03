@@ -3,7 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { Tab } from "@headlessui/react";
 import { Rating } from "@material-tailwind/react";
-import { fetchBook, updateReserved } from "../../redux/slices/bookSlice";
+import {
+  fetchBook,
+  updateReserved,
+  deleteBook,
+} from "../../redux/slices/bookSlice";
 import { fetchGenre } from "../../redux/slices/genresSlice";
 import {
   addReserve,
@@ -91,12 +95,15 @@ export default function SinglePage() {
       dispatch(fetchGenre(book.data.genres));
     }
   }, [book.data.genres, id]);
-
+  const handleBookDelete = async (e) => {
+    e.preventDefault();
+    await dispatch(deleteBook({ id: book.data?.id }));
+  };
   return (
-    <div className="bg-white">
+    <div>
       <div className="mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
         {/* Product */}
-        <div className="lg:grid lg:grid-rows-1 lg:grid-cols-7 lg:gap-x-8 lg:gap-y-10 xl:gap-x-16">
+        <div className=" lg:grid lg:grid-rows-1 lg:grid-cols-7 lg:gap-x-8 lg:gap-y-10 xl:gap-x-16">
           {/* Product image */}
           <div className="lg:row-end-1 lg:col-span-3">
             <div className="aspect-w-4 aspect-h-6 rounded-lg bg-gray-100 overflow-hidden">
@@ -109,13 +116,19 @@ export default function SinglePage() {
           </div>
 
           {/* Product details */}
-          <div className="max-w-2xl mx-auto mt-14 sm:mt-16 lg:max-w-none lg:mt-0 lg:row-end-2 lg:row-span-2 lg:col-span-3">
+          <div className="relative max-w-2xl mx-auto mt-14 sm:mt-16 lg:max-w-none lg:mt-0 lg:row-end-2 lg:row-span-2 lg:col-span-3">
             <div className="flex flex-col-reverse">
               <div className="mt-4">
                 <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
                   {book.data?.title}
                 </h1>
-
+                <button
+                  type="button"
+                  className="absolute  top-0 right-0 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 "
+                  onClick={handleBookDelete}
+                >
+                  Delete
+                </button>
                 <h2 id="information-heading" className="sr-only">
                   Product information
                 </h2>

@@ -35,7 +35,25 @@ export const updateReserved = createAsyncThunk(
     return { data };
   }
 );
+export const deleteBook = createAsyncThunk("deleteBook", async ({ id }) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const response = await fetch(
+      `${process.env.VITE_BACKEND}/book/delete/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
 
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    return id;
+  } catch (error) {
+    throw error;
+  }
+});
 const bookSlice = createSlice({
   name: "book",
   initialState: { data: [], isLoading: false, isError: false },
@@ -58,6 +76,9 @@ const bookSlice = createSlice({
         console.log(action.payload.data);
         state.data = action.payload.data;
       });
+    builder.addCase(deleteBook.fulfilled, (state, action) => {
+      state.data = state.data.filter((book) => book.id !== action.payload);
+    });
   },
 });
 export default bookSlice.reducer;

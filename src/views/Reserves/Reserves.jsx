@@ -74,6 +74,12 @@ export default function Reserves() {
                                 user_id: user.id,
                               })
                             );
+                            dispatch(
+                              updateReserved({
+                                book_id: book.data?.id,
+                                value: book.data?.reserved - 1,
+                              })
+                            );
                           }}
                           type="button"
                           className="text-sm font-medium text-red-700 hover:text-red-800"

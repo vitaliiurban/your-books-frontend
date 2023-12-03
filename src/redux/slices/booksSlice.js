@@ -44,7 +44,7 @@ const booksSlice = createSlice({
       .addCase(fetchReservesBooks.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        state.data = action.payload.data.books;
+        state.reservesBooks = action.payload.data.books;
       })
       .addCase(fetchBooks.rejected, (state) => {
         state.isLoading = false;

@@ -75,15 +75,12 @@ export default function SinglePage() {
   const reserves = useSelector((state) => state.reserves);
   const favorites = useSelector((state) => state.favorites);
 
-  console.log(book);
-
   useEffect(() => {
     dispatch(fetchBook(id));
   }, [id]);
 
   useEffect(() => {
     if (book.data.id && user.id) {
-      console.log("new");
       dispatch(checkReserve({ book_id: book.data?.id, user_id: user.id }));
       dispatch(checkFavorite({ book_id: book.data?.id, user_id: user.id }));
     }

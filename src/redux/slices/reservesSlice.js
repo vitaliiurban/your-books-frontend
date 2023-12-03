@@ -54,6 +54,7 @@ const reservesSlice = createSlice({
     builder
       .addCase(deleteReserve.fulfilled, (state, action) => {
         state.isReserved = false;
+        state.data = action.payload.data;
       })
       .addCase(addReserve.fulfilled, (state, action) => {
         state.isLoading = false;

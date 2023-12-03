@@ -26,6 +26,17 @@ export const fetchReservesBooks = createAsyncThunk(
   }
 );
 
+export const fetchFavoritesBooks = createAsyncThunk(
+  "fetchFavoritesBooks",
+  async ({ user_id }) => {
+    const response = await fetch(
+      `${process.env.VITE_BACKEND}/books/favorites/${user_id}`
+    );
+    const data = await response.json();
+    return { data };
+  }
+);
+
 const booksSlice = createSlice({
   name: "books",
   initialState: { data: [], isLoading: false, isError: false, quantity: 0 },
@@ -45,6 +56,11 @@ const booksSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.reservesBooks = action.payload.data.books;
+      })
+      .addCase(fetchFavoritesBooks.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.favoritesBooks = action.payload.data.books;
       })
       .addCase(fetchBooks.rejected, (state) => {
         state.isLoading = false;

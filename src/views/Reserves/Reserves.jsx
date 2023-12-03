@@ -13,8 +13,6 @@ export default function Reserves() {
   const reserves = useSelector((state) => state.reserves);
   const books = useSelector((state) => state.books);
 
-  const [reservesBooks, setReservesBooks] = useState([]);
-
   useEffect(() => {
     dispatch(fetchReservesBooks({ user_id: user.id }));
   }, [reserves.data]);
@@ -78,7 +76,7 @@ export default function Reserves() {
                             );
                           }}
                           type="button"
-                          className="text-sm font-medium text-orange-600 hover:text-orange-500"
+                          className="text-sm font-medium text-red-700 hover:text-red-800"
                         >
                           <span>Remove</span>
                         </button>

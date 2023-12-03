@@ -25,7 +25,7 @@ export const deleteFavorite = createAsyncThunk(
   "deleteFavorite",
   async ({ id }) => {
     const response = await fetch(
-      `${process.env.VITE_BACKEND}/favorites/delete/${id}`,
+      `${process.env.VITE_BACKEND}/favorites/delete/${id}?book_id=${book_id}&user_id=${user_id}`,
       {
         method: "DELETE",
       }
@@ -54,6 +54,7 @@ const favoritesSlice = createSlice({
     builder
       .addCase(deleteFavorite.fulfilled, (state, action) => {
         state.isFavorited = false;
+        state.data = action.payload.data;
       })
       .addCase(addFavorite.fulfilled, (state, action) => {
         state.isLoading = false;

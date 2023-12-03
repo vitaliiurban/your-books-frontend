@@ -63,6 +63,7 @@ function CreateModal({ show, setShow }) {
       return;
     }
     dispatch(createBook(formData));
+    setShow(false);
   };
   console.log(formData);
   return (
@@ -144,7 +145,7 @@ function CreateModal({ show, setShow }) {
                   oneline={false}
                   value={formData.year}
                   onChange={handleInputChange}
-                  min={2000}
+                  min={1901}
                   max={2023}
                 />
                 <Input
@@ -185,8 +186,8 @@ function CreateModal({ show, setShow }) {
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   >
                     {genresState?.data?.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
+                      <option key={item?.id} value={item?.id}>
+                        {item?.name}
                       </option>
                     ))}
                   </select>
@@ -253,3 +254,4 @@ function CreateModal({ show, setShow }) {
 }
 
 export default CreateModal;
+// zhlbtskiy

@@ -23,7 +23,6 @@ function Catalog() {
   useEffect(() => {
     dispatch(fetchBooks({ page: currentPage, limit: currentLimit }));
   }, [currentPage]);
-  console.log(books);
 
   return (
     <>

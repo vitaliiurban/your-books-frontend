@@ -5,6 +5,11 @@ export const fetchGenre = createAsyncThunk("fetchGenre", async (id) => {
   const data = await response.json();
   return { data };
 });
+export const fetchGenres = createAsyncThunk("fetchGenres", async () => {
+  const response = await fetch(`${process.env.VITE_BACKEND}/genres/`);
+  const data = await response.json();
+  return { data };
+});
 
 const genresSlice = createSlice({
   name: "genres",
@@ -21,6 +26,19 @@ const genresSlice = createSlice({
         state.data = action.payload.data;
       })
       .addCase(fetchGenre.rejected, (state) => {
+        state.isLoading = false;
+        state.isError = true;
+      })
+      .addCase(fetchGenres.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(fetchGenres.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.data = action.payload.data;
+      })
+      .addCase(fetchGenres.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
       });

@@ -2,13 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const fetchBooks = createAsyncThunk(
   "fetchBooks",
-  async ({ page, limit }) => {
+  async ({ page, limit, searchQuery }) => {
     const quantityResponse = await fetch(
       `${process.env.VITE_BACKEND}/books/count`
     );
     const { quantity } = await quantityResponse.json();
     const response = await fetch(
-      `${process.env.VITE_BACKEND}/books?page=${page}&limit=${limit}`
+      `${process.env.VITE_BACKEND}/books?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
     );
     const data = await response.json();
     return { data, quantity };

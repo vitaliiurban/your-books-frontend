@@ -1,5 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
+export const createBook = createAsyncThunk("createBook", async (formData) => {
+  const response = await fetch(`${process.env.VITE_BACKEND}/book/create/`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
+  const data = await response.json();
+  return { data };
+});
+
 export const fetchBook = createAsyncThunk("fetchBook", async (id) => {
   const response = await fetch(`${process.env.VITE_BACKEND}/book/${id}`);
   const data = await response.json();

@@ -54,7 +54,6 @@ export default function UserSettings() {
   };
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    console.log(oldPassword, "HEY", password);
     if (!oldPassword || !password) {
       setErrorP(true);
       return;

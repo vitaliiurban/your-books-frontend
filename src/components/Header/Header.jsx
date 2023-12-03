@@ -3,13 +3,18 @@ import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { BellIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useStateContext } from "../../contexts/ContextProvider.jsx";
+import PrimaryButton from "../Buttons/PrimaryButton.jsx";
 // import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import CreateModal from "../CreateModal/CreateModal.jsx";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+
 export default function Header() {
   //   const dispatch = useDispatch();
+
   const location = useLocation();
   const currentPath = location.pathname;
   const { user } = useStateContext();
@@ -18,6 +23,7 @@ export default function Header() {
     localStorage.removeItem("ACCESS_USER");
     window.location.reload();
   };
+  const [show, setShow] = useState(false);
   const handleNavigate = (path) => {
     navigateTo(path);
   };
@@ -73,6 +79,13 @@ export default function Header() {
                 </div>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:items-center">
+                {user.role === "admin" && (
+                  <PrimaryButton
+                    label="add new book"
+                    handleClick={() => setShow(true)}
+                  />
+                )}
+                <CreateModal show={show} setShow={setShow} />
                 {/* Profile dropdown */}
                 <Menu as="div" className="ml-3 relative">
                   <div>
@@ -116,6 +129,13 @@ export default function Header() {
               </div>
               <div className="-mr-2 flex items-center sm:hidden">
                 {/* Mobile menu button */}
+                {user.role === "admin" && (
+                  <PrimaryButton
+                    label="add new book"
+                    handleClick={() => setShow(true)}
+                  />
+                )}
+                <CreateModal show={show} setShow={setShow} />
                 <Disclosure.Button className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-orange-500">
                   <span className="sr-only">Open main menu</span>
                   {open ? (

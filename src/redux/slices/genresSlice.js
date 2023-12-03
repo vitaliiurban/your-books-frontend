@@ -23,7 +23,7 @@ const genresSlice = createSlice({
       .addCase(fetchGenre.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        state.data = action.payload.data;
+        state.genre = action.payload.data;
       })
       .addCase(fetchGenre.rejected, (state) => {
         state.isLoading = false;

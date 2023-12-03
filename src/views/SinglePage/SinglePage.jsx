@@ -117,9 +117,11 @@ export default function SinglePage() {
   const id = path.substring(path.lastIndexOf("/") + 1);
 
   const book = useSelector((state) => state.book);
-  const genre = useSelector((state) => state.genres);
+  const genres = useSelector((state) => state.genres);
   const reserves = useSelector((state) => state.reserves);
   const favorites = useSelector((state) => state.favorites);
+
+  console.log(book);
 
   useEffect(() => {
     dispatch(fetchBook(id));
@@ -166,9 +168,9 @@ export default function SinglePage() {
                 <h2 id="information-heading" className="sr-only">
                   Product information
                 </h2>
-                {!book.isLoading && !genre.isLoading && (
+                {!book.isLoading && !genres.isLoading && (
                   <p className="text-sm text-gray-500 mt-2">
-                    Genre: {genre.data?.name}
+                    Genre: {genres.genre?.name}
                   </p>
                 )}
                 <p className="text-sm text-gray-500 mt-2">
@@ -194,7 +196,14 @@ export default function SinglePage() {
                 <p className="sr-only">{reviews.average} out of 5 stars</p>
               </div>
             </div>
-            <p className="text-gray-500 mt-6">{book.data?.description}</p>
+            <div className="max-w-lg">
+              <p
+                className="text-gray-500 mt-6"
+                style={{ overflowWrap: "break-word" }}
+              >
+                {book.data?.description}
+              </p>
+            </div>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
               <button

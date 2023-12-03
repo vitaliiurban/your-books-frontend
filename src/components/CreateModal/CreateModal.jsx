@@ -6,6 +6,7 @@ import { fetchGenres } from "../../redux/slices/genresSlice";
 function CreateModal({ show, setShow }) {
   const dispatch = useDispatch();
   const genresState = useSelector((state) => state.genres);
+  console.log(genresState);
   useEffect(() => {
     dispatch(fetchGenres());
   }, []);

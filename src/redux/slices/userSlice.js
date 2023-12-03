@@ -15,6 +15,7 @@ export const updateUser = createAsyncThunk("updateUser", async (userData) => {
   console.log(data);
   return { data };
 });
+
 export const updateUserPass = createAsyncThunk(
   "updateUser",
   async (userData) => {

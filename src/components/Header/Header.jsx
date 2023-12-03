@@ -24,6 +24,8 @@ export default function Header() {
   const headerOptions = [
     { id: 1, name: "Catalog", path: "/catalog" },
     { id: 2, name: "Home", path: "/home" },
+    { id: 3, name: "Reserves", path: "/reserves" },
+    { id: 4, name: "Favorites", path: "/favorites" },
   ];
   const userOptions = [
     {

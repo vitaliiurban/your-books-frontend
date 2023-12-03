@@ -2,9 +2,19 @@ import { Fragment, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { Tab } from "@headlessui/react";
-import { fetchBook } from "../../redux/slices/bookSlice";
+import { Rating } from "@material-tailwind/react";
+import { fetchBook, updateReserved } from "../../redux/slices/bookSlice";
 import { fetchGenre } from "../../redux/slices/genresSlice";
-import { addReserve } from "../../redux/slices/reservesSlice.js";
+import {
+  addReserve,
+  deleteReserve,
+  checkReserve,
+} from "../../redux/slices/reservesSlice.js";
+import {
+  addFavorite,
+  deleteFavorite,
+  checkFavorite,
+} from "../../redux/slices/favoritesSlice.js";
 import { useStateContext } from "../../contexts/ContextProvider.jsx";
 
 // const product = {
@@ -102,23 +112,32 @@ function classNames(...classes) {
 
 export default function SinglePage() {
   const { user } = useStateContext();
-  console.log("user", user.id);
   const dispatch = useDispatch();
   const path = window.location.pathname;
   const id = path.substring(path.lastIndexOf("/") + 1);
 
   const book = useSelector((state) => state.book);
   const genre = useSelector((state) => state.genres);
-  console.log(book);
-  console.log(genre);
+  const reserves = useSelector((state) => state.reserves);
+  const favorites = useSelector((state) => state.favorites);
 
   useEffect(() => {
     dispatch(fetchBook(id));
   }, [id]);
 
   useEffect(() => {
-    dispatch(fetchGenre(book.data.genres));
+    if (book.data.id && user.id) {
+      console.log("new");
+      dispatch(checkReserve({ book_id: book.data?.id, user_id: user.id }));
+      dispatch(checkFavorite({ book_id: book.data?.id, user_id: user.id }));
+    }
   }, [book.data, id]);
+
+  useEffect(() => {
+    if (book.data.genres) {
+      dispatch(fetchGenre(book.data.genres));
+    }
+  }, [book.data.genres, id]);
 
   return (
     <div className="bg-white">
@@ -159,50 +178,98 @@ export default function SinglePage() {
                   Publisher: {book.data?.publisher}
                 </p>
                 <p className="text-sm text-gray-500 mt-2">
-                  In stock: {book.data?.in_stock}
+                  Available: {book.data?.in_stock - book.data?.reserved}
                 </p>
               </div>
 
               <div>
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
-                  {[0, 1, 2, 3, 4].map((rating) => (
-                    <StarIcon
-                      key={rating}
-                      className={classNames(
-                        reviews.average > rating
-                          ? "text-yellow-400"
-                          : "text-gray-300",
-                        "h-5 w-5 flex-shrink-0"
-                      )}
-                      aria-hidden="true"
-                    />
-                  ))}
+                  <Rating
+                    value={book?.data?.rating}
+                    readonly
+                    ratedColor={"orange"}
+                  />
                 </div>
                 <p className="sr-only">{reviews.average} out of 5 stars</p>
               </div>
             </div>
-            <p className="text-gray-500 mt-6">
-              {
-                "Suspendisse potenti. In eleifend quam a odio. In hac habitasse platea dictumst. Maecenas ut massa quis augue luctus tincidunt. Nulla mollis molestie lorem. Quisque ut erat. Curabitur gravida nisi at nibh. In hac habitasse platea dictumst. Aliquam augue quam, sollicitudin vitae, consectetuer eget, rutrum at, lorem."
-              }
-            </p>
+            <p className="text-gray-500 mt-6">{book.data?.description}</p>
 
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
               <button
                 onClick={() => {
-                  dispatch(
-                    addReserve({ book_id: book.data?.id, user_id: user.id })
-                  );
+                  if (book.data?.in_stock - book.data?.reserved > 0) {
+                    if (!reserves.isReserved) {
+                      dispatch(
+                        addReserve({ book_id: book.data?.id, user_id: user.id })
+                      );
+                      dispatch(
+                        updateReserved({
+                          book_id: book.data?.id,
+                          value: book.data?.reserved + 1,
+                        })
+                      );
+                    } else {
+                      dispatch(deleteReserve({ id: reserves.data.id }));
+                      dispatch(
+                        updateReserved({
+                          book_id: book.data?.id,
+                          value: book.data?.reserved - 1,
+                        })
+                      );
+                    }
+                  }
+                  if (
+                    book.data?.in_stock - book.data?.reserved <= 0 &&
+                    reserves.isReserved
+                  ) {
+                    dispatch(deleteReserve({ id: reserves.data.id }));
+                    dispatch(
+                      updateReserved({
+                        book_id: book.data?.id,
+                        value: book.data?.reserved - 1,
+                      })
+                    );
+                  }
                 }}
                 type="button"
-                className="w-full bg-orange-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-orange-500"
+                disabled={
+                  book.data?.in_stock - book.data?.reserved <= 0 &&
+                  !reserves.isReserved
+                }
+                className={`w-full ${
+                  !reserves.isReserved
+                    ? "bg-orange-600 hover:bg-orange-700"
+                    : "bg-gray-400 disabled:pointer-event-none hover:bg-orange-600"
+                } border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-orange-500`}
               >
-                Reserve
+                {!reserves.isReserved ? "Reserve" : "Reserved"}
               </button>
               <button
                 type="button"
-                className="w-full bg-orange-50 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-orange-700 hover:bg-orange-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-orange-500"
+                onClick={() => {
+                  if (book.data?.in_stock - book.data?.reserved > 0) {
+                    if (!favorites.isFavorited) {
+                      dispatch(
+                        addFavorite({
+                          book_id: book.data?.id,
+                          user_id: user.id,
+                        })
+                      );
+                    } else {
+                      dispatch(deleteFavorite({ id: favorites.data.id }));
+                    }
+                  }
+                  if (favorites.isFavorited) {
+                    dispatch(deleteFavorite({ id: favorites.data.id }));
+                  }
+                }}
+                className={`w-full ${
+                  !favorites.isFavorited
+                    ? "bg-orange-50 hover:bg-orange-100"
+                    : "bg-gray-300 disabled:pointer-event-none hover:bg-orange-100"
+                } border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-orange-500`}
               >
                 Favorite
               </button>
@@ -298,18 +365,6 @@ export default function SinglePage() {
                       )
                     }
                   >
-                    Customer Reviews
-                  </Tab>
-                  <Tab
-                    className={({ selected }) =>
-                      classNames(
-                        selected
-                          ? "border-orange-600 text-orange-600"
-                          : "border-transparent text-gray-700 hover:text-gray-800 hover:border-gray-300",
-                        "whitespace-nowrap py-6 border-b-2 font-medium text-sm"
-                      )
-                    }
-                  >
                     FAQ
                   </Tab>
                   <Tab
@@ -327,61 +382,6 @@ export default function SinglePage() {
                 </Tab.List>
               </div>
               <Tab.Panels as={Fragment}>
-                <Tab.Panel className="-mb-10">
-                  <h3 className="sr-only">Customer Reviews</h3>
-
-                  {reviews.featured.map((review, reviewIdx) => (
-                    <div
-                      key={review.id}
-                      className="flex text-sm text-gray-500 space-x-4"
-                    >
-                      <div className="flex-none py-10">
-                        <img
-                          src={review.avatarSrc}
-                          alt=""
-                          className="w-10 h-10 bg-gray-100 rounded-full"
-                        />
-                      </div>
-                      <div
-                        className={classNames(
-                          reviewIdx === 0 ? "" : "border-t border-gray-200",
-                          "py-10"
-                        )}
-                      >
-                        <h3 className="font-medium text-gray-900">
-                          {review.author}
-                        </h3>
-                        <p>
-                          <time dateTime={review.datetime}>{review.date}</time>
-                        </p>
-
-                        <div className="flex items-center mt-4">
-                          {[0, 1, 2, 3, 4].map((rating) => (
-                            <StarIcon
-                              key={rating}
-                              className={classNames(
-                                review.rating > rating
-                                  ? "text-yellow-400"
-                                  : "text-gray-300",
-                                "h-5 w-5 flex-shrink-0"
-                              )}
-                              aria-hidden="true"
-                            />
-                          ))}
-                        </div>
-                        <p className="sr-only">
-                          {review.rating} out of 5 stars
-                        </p>
-
-                        <div
-                          className="mt-4 prose prose-sm max-w-none text-gray-500"
-                          dangerouslySetInnerHTML={{ __html: review.content }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </Tab.Panel>
-
                 <Tab.Panel as="dl" className="text-sm text-gray-500">
                   <h3 className="sr-only">Frequently Asked Questions</h3>
 

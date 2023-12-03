@@ -15,6 +15,17 @@ export const fetchBooks = createAsyncThunk(
   }
 );
 
+export const fetchReservesBooks = createAsyncThunk(
+  "fetchReservesBooks",
+  async ({ user_id }) => {
+    const response = await fetch(
+      `${process.env.VITE_BACKEND}/books/reserves/${user_id}`
+    );
+    const data = await response.json();
+    return { data };
+  }
+);
+
 const booksSlice = createSlice({
   name: "books",
   initialState: { data: [], isLoading: false, isError: false, quantity: 0 },
@@ -29,6 +40,11 @@ const booksSlice = createSlice({
         state.isError = false;
         state.data = action.payload.data;
         state.quantity = parseInt(action.payload.quantity);
+      })
+      .addCase(fetchReservesBooks.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.data = action.payload.data.books;
       })
       .addCase(fetchBooks.rejected, (state) => {
         state.isLoading = false;

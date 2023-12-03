@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchReserve = createAsyncThunk("fetchReserve", async (id) => {
-  const response = await fetch(`${process.env.VITE_BACKEND}/reserves/${id}`);
+export const fetchFavorite = createAsyncThunk("fetchFavorite", async (id) => {
+  const response = await fetch(`${process.env.VITE_BACKEND}/favorites/${id}`);
   const data = await response.json();
   return { data };
 });
 
-export const addReserve = createAsyncThunk(
-  "addReserve",
+export const addFavorite = createAsyncThunk(
+  "addFavorite",
   async ({ book_id, user_id }) => {
-    const response = await fetch(`${process.env.VITE_BACKEND}/reserves/add`, {
+    const response = await fetch(`${process.env.VITE_BACKEND}/favorites/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,11 +21,11 @@ export const addReserve = createAsyncThunk(
   }
 );
 
-export const deleteReserve = createAsyncThunk(
-  "deleteReserve",
-  async ({ id, book_id, user_id }) => {
+export const deleteFavorite = createAsyncThunk(
+  "deleteFavorite",
+  async ({ id }) => {
     const response = await fetch(
-      `${process.env.VITE_BACKEND}/reserves/delete/${id}?book_id=${book_id}&user_id=${user_id}`,
+      `${process.env.VITE_BACKEND}/favorites/delete/${id}`,
       {
         method: "DELETE",
       }
@@ -35,58 +35,58 @@ export const deleteReserve = createAsyncThunk(
   }
 );
 
-export const checkReserve = createAsyncThunk(
-  "checkReserve",
+export const checkFavorite = createAsyncThunk(
+  "checkFavorite",
   async ({ book_id, user_id }) => {
     const response = await fetch(
-      `${process.env.VITE_BACKEND}/reserves/check-reserve?book_id=${book_id}&user_id=${user_id}`
+      `${process.env.VITE_BACKEND}/favorites/check-favorite?book_id=${book_id}&user_id=${user_id}`
     );
     const data = await response.json();
     return { data };
   }
 );
 
-const reservesSlice = createSlice({
-  name: "reserves",
+const favoritesSlice = createSlice({
+  name: "favoritesSlice",
   initialState: { data: [], isLoading: false, isError: false },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(deleteReserve.fulfilled, (state, action) => {
-        state.isReserved = false;
+      .addCase(deleteFavorite.fulfilled, (state, action) => {
+        state.isFavorited = false;
       })
-      .addCase(addReserve.fulfilled, (state, action) => {
+      .addCase(addFavorite.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         if (action.payload.data) {
           state.data = action.payload.data;
-          state.isReserved = true;
+          state.isFavorited = true;
         }
       })
-      .addCase(checkReserve.fulfilled, (state, action) => {
+      .addCase(checkFavorite.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         console.log(action.payload.data);
         if (action.payload.data) {
           state.data = action.payload.data;
-          state.isReserved = true;
+          state.isFavorited = true;
         } else {
-          state.isReserved = false;
+          state.isFavorited = false;
         }
       })
-      .addCase(fetchReserve.pending, (state) => {
+      .addCase(fetchFavorite.pending, (state) => {
         state.isLoading = true;
         state.isError = false;
       })
-      .addCase(fetchReserve.fulfilled, (state, action) => {
+      .addCase(fetchFavorite.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.data = action.payload.data;
       })
-      .addCase(fetchReserve.rejected, (state) => {
+      .addCase(fetchFavorite.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
       });
   },
 });
-export default reservesSlice.reducer;
+export default favoritesSlice.reducer;

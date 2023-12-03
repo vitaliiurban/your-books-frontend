@@ -6,6 +6,24 @@ export const fetchBook = createAsyncThunk("fetchBook", async (id) => {
   return { data };
 });
 
+export const updateReserved = createAsyncThunk(
+  "updateReserved",
+  async ({ book_id, value }) => {
+    const response = await fetch(
+      `${process.env.VITE_BACKEND}/book/update-reserved`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ book_id, value }),
+      }
+    );
+    const data = await response.json();
+    return { data };
+  }
+);
+
 const bookSlice = createSlice({
   name: "book",
   initialState: { data: [], isLoading: false, isError: false },
@@ -23,6 +41,10 @@ const bookSlice = createSlice({
       .addCase(fetchBook.rejected, (state) => {
         state.isLoading = false;
         state.isError = true;
+      })
+      .addCase(updateReserved.fulfilled, (state, action) => {
+        console.log(action.payload.data);
+        state.data = action.payload.data;
       });
   },
 });

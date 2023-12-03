@@ -11,6 +11,10 @@ import SinglePage from "./views/SinglePage/SinglePage.jsx";
 
 import UserProfile from "./views/UserProfile/UserProfile.jsx";
 import UserSettings from "./views/UserSettings/UserSettings.jsx";
+
+import Reserves from "./views/Reserves/Reserves.jsx";
+import Favorites from "./views/Favorites/Favorites.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -58,6 +62,14 @@ const router = createBrowserRouter([
       {
         path: "/home",
         element: <Home />,
+      },
+      {
+        path: "/reserves",
+        element: <Reserves />,
+      },
+      {
+        path: "/favorites",
+        element: <Favorites />,
       },
       {
         path: "/user-profile",

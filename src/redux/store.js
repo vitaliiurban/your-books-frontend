@@ -7,6 +7,7 @@ import userSlice from "./slices/userSlice";
 import { configureStore } from "@reduxjs/toolkit";
 import genresSlice from "./slices/genresSlice";
 import reservesSlice from "./slices/reservesSlice";
+import favoritesSlice from "./slices/favoritesSlice";
 
 const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ const store = configureStore({
     book: bookSlice,
     genres: genresSlice,
     reserves: reservesSlice,
+    favorites: favoritesSlice,
     user: userSlice,
   },
 });

@@ -67,7 +67,6 @@ const reservesSlice = createSlice({
       .addCase(checkReserve.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        console.log(action.payload.data);
         if (action.payload.data) {
           state.data = action.payload.data;
           state.isReserved = true;

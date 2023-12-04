@@ -23,7 +23,7 @@ export const addFavorite = createAsyncThunk(
 
 export const deleteFavorite = createAsyncThunk(
   "deleteFavorite",
-  async ({ id }) => {
+  async ({ id, book_id, user_id }) => {
     const response = await fetch(
       `${process.env.VITE_BACKEND}/favorites/delete/${id}?book_id=${book_id}&user_id=${user_id}`,
       {
@@ -67,7 +67,6 @@ const favoritesSlice = createSlice({
       .addCase(checkFavorite.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        console.log(action.payload.data);
         if (action.payload.data) {
           state.data = action.payload.data;
           state.isFavorited = true;

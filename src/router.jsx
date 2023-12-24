@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import DefaultLayout from "./layouts/DefaultLayout/DefaultLayout.jsx";
-import AuthenticationLayout from "./layouts/authenticationLayout/authenticationLayout.jsx";
+import AuthenticationLayout from "./layouts/AuthenticationLayout/AuthenticationLayout.jsx";
 
 import SignIn from "./views/SignIn/SignIn.jsx";
 import SignUp from "./views/SignUp/SignUp.jsx";

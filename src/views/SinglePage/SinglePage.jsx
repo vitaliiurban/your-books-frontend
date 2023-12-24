@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { StarIcon } from "@heroicons/react/24/solid";
 import { Tab } from "@headlessui/react";
@@ -20,7 +20,8 @@ import {
   checkFavorite,
 } from "../../redux/slices/favoritesSlice.js";
 import { useStateContext } from "../../contexts/ContextProvider.jsx";
-
+import CreateModal from "../../components/CreateModal/CreateModal.jsx";
+import Notification from "../../components/Notification/Notification.jsx";
 const faqs = [
   {
     question: "What format are these icons?",
@@ -69,16 +70,16 @@ function classNames(...classes) {
 }
 
 export default function SinglePage() {
-  const { user } = useStateContext();
   const dispatch = useDispatch();
   const path = window.location.pathname;
   const id = path.substring(path.lastIndexOf("/") + 1);
-
+  const { user, setUser } = useStateContext();
   const book = useSelector((state) => state.book);
   const genres = useSelector((state) => state.genres);
   const reserves = useSelector((state) => state.reserves);
   const favorites = useSelector((state) => state.favorites);
-
+  const [show, setShow] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   useEffect(() => {
     dispatch(fetchBook(id));
   }, [id]);
@@ -89,7 +90,7 @@ export default function SinglePage() {
       dispatch(checkFavorite({ book_id: book.data?.id, user_id: user.id }));
     }
   }, [book.data, id]);
-
+  console.log(book.data);
   useEffect(() => {
     if (book.data.genres) {
       dispatch(fetchGenre(book.data.genres));
@@ -98,7 +99,9 @@ export default function SinglePage() {
   const handleBookDelete = async (e) => {
     e.preventDefault();
     await dispatch(deleteBook({ id: book.data?.id }));
+    setShowNotification(true);
   };
+
   return (
     <div>
       <div className="mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -122,13 +125,31 @@ export default function SinglePage() {
                 <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
                   {book.data?.title}
                 </h1>
-                <button
-                  type="button"
-                  className="absolute  top-0 right-0 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 "
-                  onClick={handleBookDelete}
-                >
-                  Delete
-                </button>
+                {user?.role === "admin" && (
+                  <button
+                    type="button"
+                    className="absolute  top-0 right-[120px] focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-red-900 "
+                    onClick={() => setShow(!show)}
+                  >
+                    update
+                  </button>
+                )}
+                <CreateModal
+                  show={show}
+                  setShow={setShow}
+                  data={book.data}
+                  label={"Update book"}
+                  method={"update"}
+                />
+                {user?.role === "admin" && (
+                  <button
+                    type="button"
+                    className="absolute  top-0 right-0 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900 "
+                    onClick={handleBookDelete}
+                  >
+                    Delete
+                  </button>
+                )}
                 <h2 id="information-heading" className="sr-only">
                   Product information
                 </h2>
@@ -151,11 +172,13 @@ export default function SinglePage() {
               <div>
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
-                  <Rating
-                    value={book?.data?.rating}
-                    readonly
-                    ratedColor={"orange"}
-                  />
+                  {book.data.rating && (
+                    <Rating
+                      value={book?.data?.rating}
+                      readonly
+                      ratedColor={"orange"}
+                    />
+                  )}
                 </div>
                 {/* <p className="sr-only">{reviews.average} out of 5 stars</p> */}
               </div>
@@ -247,7 +270,12 @@ export default function SinglePage() {
                 Favorite
               </button>
             </div>
-
+            <Notification
+              show={showNotification}
+              setShow={setShowNotification}
+              title={"successfully changed"}
+              body={"check changes in catalog"}
+            />
             <div className="border-t border-gray-200 mt-10 pt-10">
               <h3 className="text-sm font-medium text-gray-900">License</h3>
               <p className="mt-4 text-sm text-gray-500">

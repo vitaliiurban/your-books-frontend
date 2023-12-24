@@ -9,11 +9,28 @@ export const createBook = createAsyncThunk("createBook", async (formData) => {
     body: JSON.stringify(formData),
   });
   const data = await response.json();
+
   return { data };
 });
 
 export const fetchBook = createAsyncThunk("fetchBook", async (id) => {
   const response = await fetch(`${process.env.VITE_BACKEND}/book/${id}`);
+  const data = await response.json();
+  return { data };
+});
+
+export const updateBook = createAsyncThunk("updateBook", async (formData) => {
+  const response = await fetch(
+    `${process.env.VITE_BACKEND}/book/update/${formData.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+  console.log(formData, "updatebook");
   const data = await response.json();
   return { data };
 });
@@ -76,8 +93,24 @@ const bookSlice = createSlice({
         console.log(action.payload.data);
         state.data = action.payload.data;
       });
-    builder.addCase(deleteBook.fulfilled, (state, action) => {
-      state.data = state.data.filter((book) => book.id !== action.payload);
+    builder
+      .addCase(deleteBook.fulfilled, (state, action) => {
+        // state.data = state?.data?.filter((book) => book.id !== action.payload);
+      })
+      .addCase(updateBook.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateBook.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.data = action.payload.data;
+      })
+      .addCase(updateBook.rejected, (state, action) => {
+        state.isError = true;
+        console.error("Error updating book:", action.error);
+      });
+    builder.addCase(createBook.fulfilled, (state, action) => {
+      console.log(action.payload.data);
+      state.data.unshift(action.payload.data);
     });
   },
 });

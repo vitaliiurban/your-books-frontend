@@ -137,7 +137,7 @@ export default function UserSettings() {
           body={
             userState?.data?.error
               ? userState.data.error
-              : "go to user page to see changes"
+              : "now you have a new pass!"
           }
           error={userState?.data?.error ? true : false}
         />

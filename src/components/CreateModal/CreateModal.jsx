@@ -1,43 +1,62 @@
 import Input from "./Components/Input";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createBook } from "../../redux/slices/bookSlice";
+import { createBook, updateBook } from "../../redux/slices/bookSlice";
 import { fetchGenres } from "../../redux/slices/genresSlice";
-function CreateModal({ show, setShow }) {
+import Notification from "../Notification/Notification";
+import { fetchBooks } from "../../redux/slices/booksSlice";
+function CreateModal({ show, setShow, label, method, data }) {
   const dispatch = useDispatch();
   const genresState = useSelector((state) => state.genres);
+  const user = useSelector((state) => state.authentication);
+
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState(
+    "book is waiting  for you!"
+  );
+  const [error, setError] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    author: "",
+    year: 1901,
+    publisher: "",
+    image: "",
+    rating: 1,
+    genres: 1,
+    in_stock: 0,
+    reserved: 0,
+    description: "",
+  });
 
   useEffect(() => {
     dispatch(fetchGenres());
   }, []);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    author: "",
-    year: 0,
-    publisher: "",
-    image: "",
-    rating: 0,
-    genres: "",
-    in_stock: 0,
-    reserved: 0,
-    description: "",
-  });
-  const [genres, setGenres] = useState(0);
+  useEffect(() => {
+    if (data?.title) {
+      setFormData(data);
+    }
+  }, [data]);
   const [descripton, setDescription] = useState("");
-  const handleGenreChange = (event) => {
-    setGenres(event.target.value);
-    setFormData({
-      ...formData,
-      genres: event.target.value,
-    });
-  };
+  // const handleGenreChange = (event) => {
+  //   setFormData({
+  //     ...formData,
+  //     genres: event.target.value,
+  //   });
+  // };
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    const { name, value, id } = e.target;
+    if (id === "genres") {
+      setFormData({
+        ...formData,
+        [id]: value,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
   const handleDescriptionChange = (e) => {
     setDescription(e.target.value);
@@ -57,17 +76,24 @@ function CreateModal({ show, setShow }) {
       !formData.image ||
       !formData.rating ||
       !formData.genres ||
-      !formData.in_stock ||
-      !formData.reserved ||
       !formData.description
     ) {
-      console.log("error need more data");
+      setNotificationMessage("error need more data");
+      setShowNotification(true);
+      setError(true);
       return;
     }
-    dispatch(createBook(formData));
-    setShow(false);
-  };
 
+    if (method === "update") {
+      await dispatch(updateBook(formData));
+    } else {
+      await dispatch(createBook(formData));
+      await dispatch(fetchBooks());
+    }
+    setShow(false);
+    setError(false);
+  };
+  console.log(formData);
   return (
     <>
       <div
@@ -94,13 +120,17 @@ function CreateModal({ show, setShow }) {
           <div className="relative bg-white rounded-lg shadow dark:bg-gray-900 ">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Add New Book
+                {label ? label : "Add New Book"}
               </h3>
               <button
                 type="button"
                 className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                 data-modal-toggle="crud-modal"
-                onClick={() => setShow(false)}
+                onClick={() => {
+                  setShow(false);
+                  setShowNotification(false);
+                  setError(false);
+                }}
               >
                 <svg
                   className="w-3 h-3"
@@ -182,9 +212,10 @@ function CreateModal({ show, setShow }) {
                     genres
                   </label>
                   <select
+                    label="genres"
                     id="genres"
-                    value={genres}
-                    onChange={handleGenreChange}
+                    value={formData.genres}
+                    onChange={handleInputChange}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                   >
                     {genresState?.data?.map((item) => (
@@ -248,6 +279,13 @@ function CreateModal({ show, setShow }) {
                 Add new book
               </button>
             </form>
+            <Notification
+              show={showNotification}
+              setShow={setShowNotification}
+              title={error ? "there is some problem" : "successfully"}
+              body={notificationMessage}
+              error={error ? true : false}
+            />
           </div>
         </div>
       </div>

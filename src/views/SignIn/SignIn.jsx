@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useStateContext } from "../../contexts/ContextProvider.jsx";
 import { signInUser } from "../../redux/slices/authenticationSlice";
 import { useNavigate } from "react-router-dom";
+import Notification from "../../components/Notification/Notification";
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigateTo = useNavigate();
   const { setUser } = useStateContext();
   const user = useSelector((state) => state.authentication);
+  const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(false);
@@ -19,13 +21,14 @@ export default function SignIn() {
     if (error) setError(false);
     setPassword(e.target.value);
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
       setError(true);
       return;
     }
-    dispatch(signInUser({ email, password }));
+    await dispatch(signInUser({ email, password }));
+    setShow(true);
   };
   // console.log(user.data);
   useEffect(() => {
@@ -36,6 +39,7 @@ export default function SignIn() {
   const handleGotoSignUp = () => {
     navigateTo("/sign-up");
   };
+  console.log(user);
   return (
     <>
       <div className="min-h-full flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -135,6 +139,19 @@ export default function SignIn() {
                 </button>
               </div>
             </form>
+            <Notification
+              show={show}
+              setShow={setShow}
+              title={
+                user?.data?.error ? "there is some problem" : "successfully!"
+              }
+              body={
+                user?.data?.error
+                  ? user.data.error
+                  : "you will be redirected to home page"
+              }
+              error={user?.data?.error ? true : false}
+            />
           </div>
         </div>
       </div>

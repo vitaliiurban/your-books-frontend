@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "../../redux/slices/authenticationSlice";
 import Notification from "../../components/Notification/Notification";
 import { useNavigate } from "react-router-dom";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function SignUp() {
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.authentication);
   const [error, setError] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -26,14 +27,14 @@ export default function SignUp() {
     if (error) setError(false);
     setPassword(e.target.value);
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username || !email || !password) {
       setError(true);
       return;
     }
 
-    dispatch(
+    await dispatch(
       signUpUser({
         username,
         email,
@@ -178,11 +179,19 @@ export default function SignUp() {
           </div>
         </div>
       </div>
+
       <Notification
         show={show}
         setShow={setShow}
-        title={"successfully added"}
-        body={"now you can go to sign in page!"}
+        title={
+          user?.data?.error ? "there is some problem" : "successfully added"
+        }
+        body={
+          user?.data?.error
+            ? user.data.error
+            : "now you can go to sign in page!"
+        }
+        error={user?.data?.error ? true : false}
       />
     </>
   );

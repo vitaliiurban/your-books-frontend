@@ -32,6 +32,7 @@ export default {
     require("@tailwindcss/typography"),
   ],
   mode: "jit",
+  purge: ["./index.html", "./src/**/*.{js,jsx,ts,tsx,vue}"],
   module: {
     rules: [
       {

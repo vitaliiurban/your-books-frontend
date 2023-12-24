@@ -58,7 +58,7 @@ export default function Header() {
                 <div className="flex-shrink-0 flex items-center">
                   <img
                     className="mx-auto h-12 w-auto"
-                    src="/public/your-books.svg"
+                    src="/your-books.svg"
                     alt="your-books-logo"
                   />
                 </div>

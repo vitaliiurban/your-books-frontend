@@ -6,7 +6,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     server: {
       proxy: {
-        "/api": "http://138.197.191.73:3000",
+        "/api": process.env.VITE_BACKEND,
       },
     },
     define: {

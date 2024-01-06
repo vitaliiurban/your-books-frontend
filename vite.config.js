@@ -10,7 +10,7 @@ export default defineConfig(({ command, mode }) => {
       },
     },
     define: {
-      "process.env.VITE_BACKEND": "/api",
+      "process.env.VITE_BACKEND": JSON.stringify("/api"),
     },
     plugins: [react()],
   };

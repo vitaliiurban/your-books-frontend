@@ -6,11 +6,11 @@ export default defineConfig(({ command, mode }) => {
   return {
     server: {
       proxy: {
-        "/api": process.env.VITE_BACKEND,
+        "/api": "http://localhost:3000",
       },
     },
     define: {
-      "process.env.VITE_BACKEND": JSON.stringify(env.VITE_BACKEND),
+      "process.env.VITE_BACKEND": "/api",
     },
     plugins: [react()],
   };
